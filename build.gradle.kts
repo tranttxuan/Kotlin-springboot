@@ -37,6 +37,9 @@ dependencies {
 
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webflux")
+    testImplementation("io.mockk:mockk:1.10.4")
+    testImplementation("com.ninja-squad:springmockk:3.0.1")
 }
 
 tasks.withType<KotlinCompile> {
@@ -52,4 +55,12 @@ tasks.withType<Test> {
 
 kotlin {
     jvmToolchain(11)
+}
+
+sourceSets {
+    test {
+        java {
+            setSrcDirs(listOf("src/test/unit", "src/test/integration"))
+        }
+    }
 }
