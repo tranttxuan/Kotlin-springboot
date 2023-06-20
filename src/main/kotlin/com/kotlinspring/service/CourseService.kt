@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service
 @Service
 class CourseService(val courseRepository: CourseRepository) {
 
-    companion object: KLogging()
+    companion object : KLogging()
+
     fun addCourse(courseDTO: CourseDTO): CourseDTO {
         val courseEntity = courseDTO.let {
             Course(null, it.name, it.category)
@@ -17,6 +18,12 @@ class CourseService(val courseRepository: CourseRepository) {
         courseRepository.save(courseEntity)
         logger.info { "Saved course is: $courseEntity" }
         return courseEntity.let {
+            CourseDTO(it.id, it.name, it.category)
+        }
+    }
+
+    fun retrieveAllCourses(): List<CourseDTO> {
+        return courseRepository.findAll().map {
             CourseDTO(it.id, it.name, it.category)
         }
     }
