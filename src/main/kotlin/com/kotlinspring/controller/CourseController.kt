@@ -4,7 +4,9 @@ import com.kotlinspring.dto.CourseDTO
 import com.kotlinspring.service.CourseService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -23,5 +25,10 @@ class CourseController(val courseService: CourseService) {
     @ResponseStatus(HttpStatus.OK)
     fun retrieveAllCourses(): List<CourseDTO> = courseService.retrieveAllCourses()
 
+    @PutMapping("/{course_id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun updateCourse(@PathVariable("course_id") courseId :Int, @RequestBody updatedCourseDTO: CourseDTO ):CourseDTO{
+        return  courseService.updateCourse(courseId, updatedCourseDTO)
+    }
 
 }
