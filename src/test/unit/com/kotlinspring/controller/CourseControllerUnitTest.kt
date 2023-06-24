@@ -50,7 +50,7 @@ class CourseControllerUnitTest {
     fun retrieveAllCourses() {
         val courseDTO = CourseDTO(null, "Build Restful APIs using SpringBoot and Kotlin", "Development")
 
-        every { courseServiceMock.retrieveAllCourses() }.returnsMany(
+        every { courseServiceMock.retrieveAllCourses(null) }.returnsMany(
             listOf(
                 courseDTO(
                     1,

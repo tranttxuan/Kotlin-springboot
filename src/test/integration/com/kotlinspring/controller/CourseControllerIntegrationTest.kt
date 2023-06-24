@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Description
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.web.util.UriComponentsBuilder
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -28,7 +29,7 @@ class CourseControllerIntegrationTest {
     lateinit var courseRepository: CourseRepository
 
     @BeforeEach
-    fun setup(){
+    fun setup() {
         courseRepository.deleteAll()
         val courses = courseEntityList()
         courseRepository.saveAll(courses)
@@ -54,7 +55,6 @@ class CourseControllerIntegrationTest {
 
     @Test
     fun retrieveAllCourses() {
-        val courseDTO = CourseDTO(null, "Build Restful APIs using SpringBoot and Kotlin", "Development")
         val courseDTOs = webTestClient
             .get()
             .uri("/v1/courses")
@@ -63,12 +63,29 @@ class CourseControllerIntegrationTest {
             .expectBodyList(CourseDTO::class.java)
             .returnResult()
             .responseBody
-       Assertions.assertEquals(3, courseDTOs!!.size)
+        Assertions.assertEquals(3, courseDTOs!!.size)
+    }
+
+    @Test
+    fun retrieveAllCourses_ByName() {
+        val uri = UriComponentsBuilder
+            .fromUriString("/v1/courses")
+            .queryParam("course_name", "SpringBoot")
+            .toUriString()
+        val courseDTOs = webTestClient
+            .get()
+            .uri(uri)
+            .exchange()
+            .expectStatus().isOk
+            .expectBodyList(CourseDTO::class.java)
+            .returnResult()
+            .responseBody
+        Assertions.assertEquals(2, courseDTOs!!.size)
     }
 
     @Test
     @Description("Update a course successfully")
-    fun updateCourses_success(){
+    fun updateCourses_success() {
         val course = Course(null, "Build Restful APIs using SpringBoot2 and Kotlin2", "Development")
         courseRepository.save(course)
 
@@ -86,7 +103,7 @@ class CourseControllerIntegrationTest {
     }
 
     @Test
-    fun deleteCourses(){
+    fun deleteCourses() {
         val course = Course(null, "Build Restful APIs using SpringBoot2 and Kotlin2", "Development")
         courseRepository.save(course)
 
