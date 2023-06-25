@@ -1,19 +1,20 @@
 package com.kotlinspring.entity
 
 import javax.persistence.*
-import javax.validation.constraints.NotBlank
 
 @Entity
-@Table(name = "Courses")
+@Table(name = "COURSES")
 data class Course(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Int?,
-    @get:NotBlank(message = "courseDTO.name must not be blank")
     var name: String,
-    @get:NotBlank(message = "courseDTO.category must not be blank")
     var category: String,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="INSTRUCTOR_ID", nullable = false)
     val instructor: Instructor? = null
-)
+){
+    override fun toString(): String {
+        return "Course(id=$id, name='$name', category='$category', instructor=${instructor!!.id})"
+    }
+}

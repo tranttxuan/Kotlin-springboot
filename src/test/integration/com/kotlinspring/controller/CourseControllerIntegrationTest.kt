@@ -3,8 +3,9 @@ package com.kotlinspring.controller
 import com.kotlinspring.dto.CourseDTO
 import com.kotlinspring.entity.Course
 import com.kotlinspring.repository.CourseRepository
+import com.kotlinspring.repository.InstructorRepository
 import courseEntityList
-import org.junit.jupiter.api.Assertions
+import instructorEntity
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -27,17 +28,25 @@ class CourseControllerIntegrationTest {
     @Autowired
     lateinit var courseRepository: CourseRepository
 
+    @Autowired
+    lateinit var instructorRepository: InstructorRepository
+
     @BeforeEach
     fun setup() {
         courseRepository.deleteAll()
-        val courses = courseEntityList()
-        courseRepository.saveAll(courses)
+        instructorRepository.deleteAll()
 
+        val instructor = instructorEntity()
+        instructorRepository.save(instructor)
+
+        val courses = courseEntityList(instructor)
+        courseRepository.saveAll(courses)
     }
 
     @Test
     fun addCourse() {
-        val courseDTO = CourseDTO(null, "Build Restful APIs using SpringBoot and Kotlin", "Development")
+        val instructor = instructorRepository.findAll().first()
+        val courseDTO = CourseDTO(null, "Build Restful APIs using SpringBoot and Kotlin", "Development",instructor.id)
         val saveResult = webTestClient
             .post()
             .uri("/v1/courses")
@@ -47,7 +56,7 @@ class CourseControllerIntegrationTest {
             .expectBody(CourseDTO::class.java)
             .returnResult()
             .responseBody
-        Assertions.assertTrue {
+        assertTrue {
             saveResult!!.id != null
         }
     }
@@ -61,10 +70,10 @@ class CourseControllerIntegrationTest {
             .bodyValue(courseDTO)
             .exchange()
             .expectStatus().isBadRequest
-            .expectBody(CourseDTO::class.java)
+            .expectBody(String::class.java)
             .returnResult()
             .responseBody
-        Assertions.assertEquals("courseDTO.name must not be blank", saveResult)
+        assertEquals("courseDTO.instructorId must not be null, courseDTO.name must not be blank", saveResult)
     }
 
 
@@ -78,7 +87,7 @@ class CourseControllerIntegrationTest {
             .expectBodyList(CourseDTO::class.java)
             .returnResult()
             .responseBody
-        Assertions.assertEquals(3, courseDTOs!!.size)
+        assertEquals(3, courseDTOs!!.size)
     }
 
     @Test
@@ -95,16 +104,17 @@ class CourseControllerIntegrationTest {
             .expectBodyList(CourseDTO::class.java)
             .returnResult()
             .responseBody
-        Assertions.assertEquals(2, courseDTOs!!.size)
+        assertEquals(2, courseDTOs!!.size)
     }
 
     @Test
     @Description("Update a course successfully")
     fun updateCourses_success() {
-        val course = Course(null, "Build Restful APIs using SpringBoot2 and Kotlin2", "Development")
+        val instructor = instructorRepository.findAll().first()
+        val course = Course(null, "Build Restful APIs using SpringBoot2 and Kotlin2", "Development", instructor)
         courseRepository.save(course)
 
-        val updatedCourse = CourseDTO(null, "Build Restful APIs using SpringBoot", "Development")
+        val updatedCourse = CourseDTO(null, "Build Restful APIs using SpringBoot", "Development", instructor.id)
         val updatedCourseDTO = webTestClient
             .put()
             .uri("/v1/courses/{courseId}", course.id)
@@ -114,12 +124,13 @@ class CourseControllerIntegrationTest {
             .expectBody(CourseDTO::class.java)
             .returnResult()
             .responseBody
-        Assertions.assertEquals("Build Restful APIs using SpringBoot", updatedCourseDTO!!.name)
+        assertEquals("Build Restful APIs using SpringBoot", updatedCourseDTO!!.name)
     }
 
     @Test
     fun deleteCourses() {
-        val course = Course(null, "Build Restful APIs using SpringBoot2 and Kotlin2", "Development")
+        val instructor = instructorRepository.findAll().first()
+        val course = Course(null, "Build Restful APIs using SpringBoot2 and Kotlin2", "Development", instructor)
         courseRepository.save(course)
 
         webTestClient

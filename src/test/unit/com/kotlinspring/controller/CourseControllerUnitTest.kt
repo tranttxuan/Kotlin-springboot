@@ -26,12 +26,13 @@ class CourseControllerUnitTest {
 
     @Test
     fun addCourse() {
-        val courseDTO = CourseDTO(null, "Build Restful APIs using SpringBoot and Kotlin", "Development")
+        val courseDTO = CourseDTO(null, "Build Restful APIs using SpringBoot and Kotlin", "Development", 1)
 
         every { courseServiceMock.addCourse(any()) } returns courseDTO(
             1,
             "Build Restful APIs using SpringBoot and Kotlin",
-            "Development"
+            "Development",
+            1
         )
 
         val savedCourseDTO = webTestClient
@@ -48,7 +49,7 @@ class CourseControllerUnitTest {
 
     @Test
     fun addCourse_validation() {
-        val courseDTO = CourseDTO(null, "", "Development")
+        val courseDTO = CourseDTO(null, "", "Development", 1)
 
         val messageError = "courseDTO.name must not be blank"
 
@@ -68,7 +69,7 @@ class CourseControllerUnitTest {
 
     @Test
     fun addCourse_runTimeException() {
-        val courseDTO = CourseDTO(null, "Build Restful APIs using SpringBoot and Kotlin", "Development")
+        val courseDTO = CourseDTO(null, "Build Restful APIs using SpringBoot and Kotlin", "Development", 1)
 
         val errorMessage = "Unexpected error occured"
         every { courseServiceMock.addCourse(any()) } throws RuntimeException(errorMessage)
