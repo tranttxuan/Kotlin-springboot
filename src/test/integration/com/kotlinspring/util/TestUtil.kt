@@ -4,15 +4,15 @@ import com.kotlinspring.entity.Course
 fun courseEntityList() = listOf(
     Course(
         null,
-        "Build RestFul APIs using SpringBoot and Kotlin", "Development"
+        "Build RestFul APIs using SpringBoot and Kotlin", "Development", null
     ),
     Course(
         null,
-        "Build RestFul APIs using SpringBoot", "Development",
+        "Build RestFul APIs using SpringBoot", "Development",null
     ),
     Course(
         null,
-        "Build RestFul APIs using NodeJs", "Development",
+        "Build RestFul APIs using NodeJs", "Development",null
     )
 )
 
