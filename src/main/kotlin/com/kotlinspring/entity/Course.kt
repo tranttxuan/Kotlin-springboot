@@ -6,14 +6,15 @@ import javax.persistence.*
 @Table(name = "COURSES")
 data class Course(
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int?,
     var name: String,
     var category: String,
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="INSTRUCTOR_ID", nullable = false)
+    @JoinColumn(name = "INSTRUCTOR_ID", nullable = false)
     val instructor: Instructor? = null
-){
+) {
     override fun toString(): String {
         return "Course(id=$id, name='$name', category='$category', instructor=${instructor!!.id})"
     }

@@ -6,7 +6,8 @@ import javax.persistence.*
 @Table(name = "INSTRUCTORS")
 data class Instructor(
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int?,
     val name: String,
     @OneToMany(

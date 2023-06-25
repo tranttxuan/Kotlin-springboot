@@ -18,4 +18,8 @@ class InstructorService(val instructorRepository: InstructorRepository) {
     fun findByInstructorId(instructorId: Int): Optional<Instructor> {
         return instructorRepository.findById(instructorId)
     }
+
+    fun retrieveAllInstructors(): List<InstructorDTO> {
+        return instructorRepository.findAll().map { InstructorDTO(it.id, it.name) }
+    }
 }

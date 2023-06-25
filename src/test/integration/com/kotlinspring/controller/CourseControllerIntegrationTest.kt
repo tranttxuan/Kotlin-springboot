@@ -4,12 +4,14 @@ import com.kotlinspring.dto.CourseDTO
 import com.kotlinspring.entity.Course
 import com.kotlinspring.repository.CourseRepository
 import com.kotlinspring.repository.InstructorRepository
+import com.kotlinspring.util.PostgreSQLContainerInitializer
 import courseEntityList
 import instructorEntity
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Description
@@ -20,7 +22,8 @@ import org.springframework.web.util.UriComponentsBuilder
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @AutoConfigureWebTestClient
-class CourseControllerIntegrationTest {
+@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+class CourseControllerIntegrationTest : PostgreSQLContainerInitializer(){
 
     @Autowired
     lateinit var webTestClient: WebTestClient
