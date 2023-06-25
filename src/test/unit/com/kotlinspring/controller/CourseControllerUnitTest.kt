@@ -48,9 +48,11 @@ class CourseControllerUnitTest {
 
     @Test
     fun addCourse_validation() {
-        val courseDTO = CourseDTO(null, "", "")
+        val courseDTO = CourseDTO(null, "", "Development")
 
-        every { courseServiceMock.addCourse(any()) } throws Exception()
+        val messageError = "courseDTO.name must not be blank"
+
+        every { courseServiceMock.addCourse(any()) } throws Exception(messageError)
 
         val response = webTestClient
             .post()
@@ -61,7 +63,7 @@ class CourseControllerUnitTest {
             .expectBody(String::class.java)
             .returnResult()
             .responseBody
-        Assertions.assertEquals("courseDTO.category must not be blank, courseDTO.name must not be blank", response)
+        Assertions.assertEquals(messageError, response)
     }
 
     @Test

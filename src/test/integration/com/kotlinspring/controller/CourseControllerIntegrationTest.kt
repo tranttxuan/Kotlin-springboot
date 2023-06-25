@@ -7,7 +7,6 @@ import courseEntityList
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -52,6 +51,22 @@ class CourseControllerIntegrationTest {
             saveResult!!.id != null
         }
     }
+
+    @Test
+    fun addCourse_validation() {
+        val courseDTO = CourseDTO(null, "", "Development")
+        val saveResult = webTestClient
+            .post()
+            .uri("/v1/courses")
+            .bodyValue(courseDTO)
+            .exchange()
+            .expectStatus().isBadRequest
+            .expectBody(CourseDTO::class.java)
+            .returnResult()
+            .responseBody
+        Assertions.assertEquals("courseDTO.name must not be blank", saveResult)
+    }
+
 
     @Test
     fun retrieveAllCourses() {
